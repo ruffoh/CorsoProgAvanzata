@@ -141,7 +141,53 @@ void generaGrafoCasuale(int pesoMin, int pesoMax) {
 
 // Implementazione dell'algoritmo di Dijkstra
 void Dijkstra(int r) {
-     
+    // Inizializza S con il nodo di partenza
+    S = inserimentoInTesta(S, creaNodo(r, 0));
+    f[r] = 0; // La distanza minima dal nodo di partenza a se stesso è 0
+    P[r] = r; // Il predecessore del nodo di partenza è se stesso
+    
+    // Inizializza T con tutti gli altri nodi e le loro distanze a infinito
+    for(int i = 0 ; i < n ; i++) {
+        if(i != r) {
+            T = inserimentoInTesta(T, creaNodo(i, 0));
+            f[i] = INT_MAX;
+            P[i] = -1;  
+        }
+    }
+    
+    // Aggiorna le distanze dei nodi adiacenti al nodo di partenza
+    for(nodo app = L[r]; app != NULL; app = app->next) {
+        f[app->info] = app->peso;
+        P[app->info] = r;
+    }
+    
+
+    // Esegue l'algoritmo finché ci sono nodi da visitare
+    while(T != NULL) {
+        int v = minimoF(T); // Trova il nodo con la distanza minima in T
+        if(v == -1) break;
+        cout << "Analizzo " << v << endl;
+        T = rimuoviElemento(T, v); // Rimuove il nodo da T
+        cout << endl << "Nodi da visitare" << endl;
+        stampaLista(T);
+        S = inserimentoInTesta(S, creaNodo(v,0));
+        // Aggiorna le distanze dei nodi adiacenti al nodo v
+        if(f[v] != INT_MAX) {
+            for(nodo app = L[v]; app != NULL; app = app->next) {
+                int a = f[v] + app->peso;
+                if(a < f[app->info]) {
+                    f[app->info] = a;
+                    P[app->info] = v;
+                }
+            }
+        }
+        cout << endl << "Pesi per ora" << endl;
+        for(int i = 0 ; i < n ; i++) cout << f[i] << " ";
+       // for(int i = 0 ; i < n ; i++) cout << P[i] << " ";
+        cout << endl;
+        sleep(1);
+
+    }    
 }
 
 // Funzione ausiliaria per controllare se ci sono ancora nodi da visitare
